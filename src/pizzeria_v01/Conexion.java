@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Conexion {
 	
-	public static Connection obtenerConexion() throws SQLException {
+	public static Connection conectar() throws SQLException {
 		
 		String url = "jdbc:mysql://localhost/pizzeria";
 		String user = "root";

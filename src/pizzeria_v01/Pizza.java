@@ -64,17 +64,11 @@ public class Pizza {
 		this.precio = precio;
 	}
 
-	// -- TO STRING --
 	
-	@Override
-	public String toString() {
-		return "Pizza [id=" + id + ", nombre=" + nombre + ", ingredientes=" + ingredientes + ", precio=" + precio + "]";
-	}
-	
-	// -- METODOS --
+	// -- METODOS (DAO) --
 
 	// :: listar ::
-	public static /*List<Pizza>*/ void listarPizza(Connection conectar) {
+	public static List<Pizza> listar(Connection conectar) {
 		Statement sentencia = null;
 		ResultSet resultado = null;
 		
@@ -93,7 +87,6 @@ public class Pizza {
 							resultado.getDouble("precio")
 						);
 				lista.add(pzz);
-				System.out.println(pzz.toString());
 			}
 			
 		} catch (SQLException e) {
@@ -109,11 +102,11 @@ public class Pizza {
             }
         }
 		
-		// return lista;
+		return lista;
 	}
 	
-	// :: incluir ::
-	public static void incluirPizza(Pizza pzz, Connection conectar) {
+	// :: agregar ::
+	public static void agregar(Pizza pzz, Connection conectar) {
 		String consultaSQL = "INSERT INTO pizza (nombre, ingredientes, precio) VALUES (?, ?, ?)";
 		try {
 			PreparedStatement sentencia = conectar.prepareStatement(consultaSQL);
