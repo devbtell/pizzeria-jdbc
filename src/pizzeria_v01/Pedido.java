@@ -10,6 +10,9 @@ public class Pedido {
 	// -- CONSTRUCTORES --
 	
 	public Pedido() {
+		this.idpedido = 0;
+		this.idpizza = 0;
+		this.idusuario = 0;
 		this.cantidad = 0;
 	}
 	

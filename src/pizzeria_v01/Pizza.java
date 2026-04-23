@@ -18,6 +18,7 @@ public class Pizza {
 	// -- CONSTRUCTORES --
 	
 	public Pizza() {
+		this.id = 0;
 		this.nombre = "";
 		this.ingredientes = "";
 		this.precio = 0.0;
@@ -67,8 +68,8 @@ public class Pizza {
 	
 	// -- METODOS (DAO) --
 
-	// :: listar ::
-	public static List<Pizza> listar(Connection conectar) {
+	// :: listar (read) ::
+	public static List<Pizza> listar(Connection conx) {
 		Statement sentencia = null;
 		ResultSet resultado = null;
 		
@@ -76,7 +77,7 @@ public class Pizza {
 		String consultaSQL = "SELECT * FROM pizza";
 		
 		try {
-			sentencia = conectar.createStatement();
+			sentencia = conx.createStatement();
 			resultado = sentencia.executeQuery(consultaSQL);
 			
 			while (resultado.next()) {
@@ -92,32 +93,67 @@ public class Pizza {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("- error de consulta -");
-		} finally {
-            try {
-                if (resultado != null) resultado.close();
-                if (sentencia != null) sentencia.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("- error al cerrar los recursos -");
-            }
-        }
+			
+			return null;
+		}
 		
 		return lista;
 	}
 	
-	// :: agregar ::
-	public static void agregar(Pizza pzz, Connection conectar) {
+	// :: agregar (create) ::
+	public static void agregar(Connection conx, Pizza pzz) {
 		String consultaSQL = "INSERT INTO pizza (nombre, ingredientes, precio) VALUES (?, ?, ?)";
 		try {
-			PreparedStatement sentencia = conectar.prepareStatement(consultaSQL);
+			PreparedStatement sentencia = conx.prepareStatement(consultaSQL);
 			
 			sentencia.setString(1, pzz.getNombre());
 			sentencia.setString(2, pzz.getIngredientes());
 			sentencia.setDouble(3, pzz.getPrecio());
 			
-			sentencia.executeUpdate();
+			int filasAfectadas = sentencia.executeUpdate();
+			
+			if (filasAfectadas > 0) {
+				System.out.println("- pizza agregada con éxito -");
+			} else {
+				System.out.println("- no se pudo agregar la pizza -");
+			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("- error al agregar la pizza a la base de datos -");
+		}
+	}
+	
+	// :: modificar (update) ::
+	/* public void actualizar(Connection conx, Pizza pzz) {
+		String consultaSQL = ""; 
+		
+		try {
+			PreparedStatement sentencia = conx.prepareStatement(consultaSQL);
+			
+			sentencia.setInt(1, pzz.getId());
+			sentencia.setString(2, pzz.getNombre());
+			sentencia.setString(3, pzz.getIngredientes());
+			sentencia.setDouble(4, pzz.getPrecio());
+			
+			sentencia.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	} */
+	
+	// :: remover (delete) ::
+	public void remover(Connection conx, int id) {
+		String consultaSQL = "DELETE FROM pizza WHERE id = ?";
+
+		try {
+			PreparedStatement sentencia = conx.prepareStatement(consultaSQL);
+
+			sentencia.setInt(1, id);
+			sentencia.executeUpdate();
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}

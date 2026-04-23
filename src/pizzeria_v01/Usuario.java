@@ -9,6 +9,7 @@ public class Usuario {
 	// -- CONSTRUCTORES --
 	
 	public Usuario() {
+		this.id = 0;
 		this.nombre = "";
 		this.apellido = "";
 	}

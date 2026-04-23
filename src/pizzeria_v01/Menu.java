@@ -27,10 +27,7 @@ public class Menu {
 						
 						switch (nl) {
 						case 1:
-							List<Pizza> lista = Pizza.listar(conx);
-							for (Pizza i : lista) {
-								System.out.println(i.getId() + " --> " + i.getNombre() + " : " + i.getIngredientes() + " >> $" + i.getPrecio());
-							}
+							listandoPizza(conx);
 						}
 					} while (nl != 0);
 					break;
@@ -41,16 +38,7 @@ public class Menu {
 						
 						switch (na) {
 						case 1:
-							Pizza pzz = new Pizza();
-							
-							System.out.println("Nombre: ");
-							pzz.setNombre(tec.nextLine());
-							System.out.println("Ingredientes: ");
-							pzz.setIngredientes(tec.nextLine());
-							System.out.println("Precio: ");
-							pzz.setPrecio(tec.nextDouble());
-							
-							Pizza.agregar(pzz, conx);
+							agregandoPizza(conx, tec);
 						}
 					} while (na != 0);
 					break;
@@ -78,24 +66,50 @@ public class Menu {
 		
 	}
 	
+	// -- MENU OPCIONES --
+	
 	public static void homeMenu() {
 		System.out.println("- - PIZZERIA - -");
-		System.out.println(":: [1] listar  ::");
-		System.out.println(":: [2] agregar ::");
-		System.out.println(":: [0] salir   ::  ");
+		System.out.println("1 : Listar");
+		System.out.println("2 : Agregar");
+		System.out.println("0 : Salir...");
 	}
 	
 	public static void listMenu() {
 		System.out.println("- - LISTAR - -");
-		System.out.println("1 -> listar pizzas");
-		System.out.println("2 -> listar usuarios");
-		System.out.println("0 -> salir...");
+		System.out.println("1 : Listar Pizzas");
+		System.out.println("2 : Listar Usuarios");
+		System.out.println("0 : Regresar...");
 	}
 	public static void addMenu() {
 		System.out.println("- - AGREGAR - -");
-		System.out.println("1 -> agregar pizza");
-		System.out.println("2 -> agregar usuarios");
-		System.out.println("0 -> salir...");
+		System.out.println("1 : Agregar Pizza");
+		System.out.println("2 : Agregar Usuario");
+		System.out.println("0 : Regresar...");
 	}
 
+	// -- PROCEDIMIENTOS -- 
+	
+	public static void listandoPizza(Connection c) {
+		List<Pizza> lista = Pizza.listar(c);
+		
+		for (Pizza i : lista) {
+			System.out.println(i.getId() + " > " + i.getNombre() + " : " + i.getIngredientes() + " >> $" + i.getPrecio());
+		}
+	}
+	
+	public static void agregandoPizza(Connection c, Scanner t) {
+		Pizza p = new Pizza();
+		
+		t.nextLine();
+		System.out.println("Nombre: ");
+		p.setNombre(t.nextLine());
+		System.out.println("Ingredientes: ");
+		p.setIngredientes(t.nextLine());
+		System.out.println("Precio: ");
+		p.setPrecio(t.nextDouble());
+		
+		Pizza.agregar(c, p);
+	}
+	
 }
