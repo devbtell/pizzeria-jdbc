@@ -37,9 +37,9 @@ public class Pizza {
 		return id;
 	}
 
-	/*public void setId(int id) {
+	public void setId(int id) {
 		this.id = id;
-	}*/
+	}
 
 	public String getNombre() {
 		return nombre;
@@ -81,18 +81,18 @@ public class Pizza {
 			resultado = sentencia.executeQuery(consultaSQL);
 			
 			while (resultado.next()) {
-				Pizza pzz = new Pizza(
+				Pizza pizza = new Pizza(
 							resultado.getInt("id"),
 							resultado.getString("nombre"),
 							resultado.getString("ingredientes"),
 							resultado.getDouble("precio")
 						);
-				lista.add(pzz);
+				lista.add(pizza);
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("- error de consulta -");
+			System.out.println("- error al lista las pizzas -");
 			
 			return null;
 		}
@@ -101,14 +101,14 @@ public class Pizza {
 	}
 	
 	// :: agregar (create) ::
-	public static void agregar(Connection conx, Pizza pzz) {
+	public static void agregar(Connection conx, Pizza pizza) {
 		String consultaSQL = "INSERT INTO pizza (nombre, ingredientes, precio) VALUES (?, ?, ?)";
 		try {
 			PreparedStatement sentencia = conx.prepareStatement(consultaSQL);
 			
-			sentencia.setString(1, pzz.getNombre());
-			sentencia.setString(2, pzz.getIngredientes());
-			sentencia.setDouble(3, pzz.getPrecio());
+			sentencia.setString(1, pizza.getNombre());
+			sentencia.setString(2, pizza.getIngredientes());
+			sentencia.setDouble(3, pizza.getPrecio());
 			
 			int filasAfectadas = sentencia.executeUpdate();
 			
@@ -155,6 +155,7 @@ public class Pizza {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("- error al remover la pizza ");
 		}
 	}
 	
