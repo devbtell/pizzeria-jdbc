@@ -1,5 +1,13 @@
 package pizzeria_v01;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Pedido {
 	
 	private int idpedido;
@@ -57,4 +65,79 @@ public class Pedido {
 		this.cantidad = cantidad;
 	}
 	
+	
+	// -- METODOS (DAO)
+	
+	// :: listar (read) ::
+	public static List<Pedido> listar(Connection conx) {
+		Statement sentencia = null;
+		ResultSet resultado = null;
+		
+		List<Pedido> lista = new ArrayList<Pedido>();
+		String consultaSQL = "SELECT * FROM pedido";
+		
+		try {
+			sentencia = conx.createStatement();
+			resultado = sentencia.executeQuery(consultaSQL);
+			
+			while (resultado.next()) {
+				Pedido pedido = new Pedido(
+							resultado.getInt("idpedido"),
+							resultado.getInt("idpizza"),
+							resultado.getInt("idusuario"),
+							resultado.getInt("cantidad")
+						);
+				lista.add(pedido);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("- error al listar el pedido -");
+			
+			return null;
+		}
+		
+		return lista;
+	}
+	
+	// :: agregar (create) ::
+	public static void agregar(Connection conx, Pedido pedido) {
+		String consultaSQL = "INSERT INTO pedido (idpedido, idpizza, idusuario, cantidad) VALUES (?, ?, ?, ?)";
+		try {
+			PreparedStatement sentencia = conx.prepareStatement(consultaSQL);
+			
+			sentencia.setInt(1, pedido.idpizza);
+			sentencia.setInt(2, pedido.idusuario);
+			sentencia.setInt(3, pedido.cantidad);
+			
+			int filasAfectadas = sentencia.executeUpdate();
+			
+			if (filasAfectadas > 0) {
+				System.out.println("- pedido agregado con exito -");
+			} else {
+				System.out.println("- no se pudo agregar el pedido -");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("- error al agregar el pedido a la base de datos -");
+		}
+	}
+	
+	// :: remover (delete) ::
+		public void remover(Connection conx, int id) {
+			String consultaSQL = "DELETE FROM pedido WHERE id = ?";
+			
+			try {
+				PreparedStatement sentencia = conx.prepareStatement(consultaSQL);
+				
+				sentencia.setInt(1, id);
+				sentencia.executeUpdate();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("- error al remover el pedido -");
+			}
+		}
+		
 }
